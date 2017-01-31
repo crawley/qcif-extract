@@ -110,13 +110,17 @@ class Processor:
         cnx = mysql.connector.connect(user=self.db_username, database=self.db_database,
                                       password=self.db_password, host=self.db_host)
         cursor = cnx.cursor()
+
+        if replaceAll:
+            delete_sql = "DELETE FROM %s" % (tablename)
+            cursor.execute(delete_sql, [])
+        
         insert_sql = "INSERT INTO %s ( %s ) VALUES ( %s )" % (
             tablename, ", ".join(columns), ", ".join(map(lambda x: "%s", columns)))
         for row in rows:
             cursor.execute(insert_sql, row)
-            break
 
-        cnx.rollback()
+        cnx.commit()
         cursor.close()
         cnx.close()
         
