@@ -7,6 +7,7 @@ import os
 
 from Subcommand import Processor
 from General import General
+from Managers import Managers
 
 def help(args):
     if args.name:
@@ -21,6 +22,9 @@ def help(args):
 
 def general(args):
     General().do_run(args)
+
+def managers(args):
+    Managers().do_run(args)
 
 def collect_args():
     parser = argparse.ArgumentParser(
@@ -56,6 +60,10 @@ def collect_args():
                                             information')
     General.build_parser(general_parser, general)
     
+    managers_parser = subparsers.add_parser('managers',
+                                            help='extract allocation managers')
+    Managers.build_parser(managers_parser, managers)
+    
     help_parser = subparsers.add_parser('help',
                                         help='print subcommand help')
     help_parser.add_argument('name', nargs='?', default=None,
@@ -63,6 +71,7 @@ def collect_args():
     help_parser.set_defaults(subcommand=help,
                              subparsers={
                                  'help': help_parser,
+                                 'managers': managers_parser,
                                  'general': general_parser})
     return parser
 

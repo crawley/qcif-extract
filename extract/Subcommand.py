@@ -1,14 +1,15 @@
 import os
 import sys
+import logging
 
 import ConfigParser
 import csv
 
 import mysql.connector
 
-from keystoneclient import client as ks_client
-from keystoneclient.auth import identity as ks_identity
-from keystoneclient import session as ks_session
+from keystoneclient.v3 import client as ks_client
+from keystoneauth1.identity import v3 as ks_identity
+from keystoneauth1 import session as ks_session
 from keystoneclient.exceptions import NotFound
 from novaclient import client as nova_client
 from neutronclient.v2_0 import client as neutron_client
@@ -21,8 +22,9 @@ class Processor:
 
     def do_run(self, args):
         self.check_args(args)
-        
-        if args.debug:
+
+        self.debug = args.debug
+        if self.debug:
             streamformat = "%(levelname)s (%(module)s:%(lineno)d) %(message)s"
             logging.basicConfig(level=logging.DEBUG,
                                 format=streamformat)
@@ -70,22 +72,26 @@ class Processor:
 
     def setup_authsession(self):
         if not self.auth:
-            self.auth = ks_identity.v2.Password(username=self.username,
-                                                password=self.password,
-                                                tenant_name=self.tenant,
-                                                auth_url=self.url)
+            self.auth = ks_identity.Password(username=self.username,
+                                             password=self.password,
+                                             project_name=self.tenant,
+                                             user_domain_id="default",
+                                             project_domain_id="default",
+                                             auth_url=self.url)
             self.session = ks_session.Session(auth=self.auth)
 
     def setup_keystone(self):
         if not self.keystone:
             self.setup_authsession()
-            self.keystone = ks_client.Client(session=self.session)
+            self.keystone = ks_client.Client(session=self.session,
+                                             debug=self.debug)
 
     def setup_neutron(self):
         if not self.neutron:
             self.setup_authsession()
             self.neutron = neutron_client.Client(session=self.session,
-                                                 region_name=self.region)
+                                                 region_name=self.region,
+                                                 http_log_debug=self.debug)
 
     def setup_allocations(self):
         if not self.allocations:

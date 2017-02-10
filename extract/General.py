@@ -3,13 +3,6 @@ import os
 import argparse
 import re
 
-from keystoneclient import client as ks_client
-from keystoneclient.auth import identity as ks_identity
-from keystoneclient import session as ks_session
-from keystoneclient.exceptions import NotFound
-from novaclient import client as nova_client
-from neutronclient.v2_0 import client as neutron_client
-
 from Subcommand import Processor
 
 class General(Processor):
