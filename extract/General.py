@@ -11,7 +11,8 @@ class General(Processor):
 
     @staticmethod
     def build_parser(parser, func):
-        parser.epilog = 'Blah'
+        parser.epilog = 'Extracts general information about NeCTAR \
+        allocations from the Allocations DB'
         parser.set_defaults(subcommand=func)
 
     def check_args(self, args):

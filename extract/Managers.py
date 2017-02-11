@@ -12,7 +12,8 @@ class Managers(Processor):
 
     @staticmethod
     def build_parser(parser, func):
-        parser.epilog = 'Blah'
+        parser.epilog = 'Extracts NeCTAR project tenant manager email \
+        addresses from Keystone'
         parser.add_argument('--legacy', action='store_true',
                             default=False,
                             help='Legacy (denormalized) table')
