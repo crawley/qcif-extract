@@ -43,7 +43,7 @@ def collect_args():
                         help='Output CSV instead of updating database')
 
     parser.add_argument('-c', '--config',
-                        default='~/.mailout.cfg',
+                        default='~/.extract.cfg',
                         help='The config file contains properties that \
                         control a lot of the behavior of the mailout tool.  \
                         You can add custom properties.')
