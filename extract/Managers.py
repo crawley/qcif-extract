@@ -38,8 +38,9 @@ class Managers(Processor):
                 managers[user_role.scope['project']['id']].append(
                     user_role.user['id'])
         headings = ["tenant_id",
-                    "manager_emails" if args.legacy else "manager_email"]
+                    "tenant_managers" if args.legacy else "tenant_manager"]
         records = []
+        separator = "," if args.csv else " "
         for proj in projects:
             if len(managers[proj.id]) == 0:
                 continue
@@ -48,7 +49,7 @@ class Managers(Processor):
                 if tm in email_dict:
                     emails.add(email_dict[tm])
             if args.legacy:
-                records.append([proj.id, ",".join(emails)])
+                records.append([proj.id, separator.join(emails)])
             else:
                 for email in emails:
                     records.append([proj.id, email])
@@ -56,5 +57,5 @@ class Managers(Processor):
             self.csv_output(headings, records, filename=args.filename)
         else:
             self.db_insert(headings, records,
-                           args.tablename or "nectar_managers",
+                           args.tablename or "nectar_tenant_managers",
                            replaceAll=True)
