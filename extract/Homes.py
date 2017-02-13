@@ -20,9 +20,15 @@ class Homes(Processor):
         parser.set_defaults(subcommand=func)
 
     def check_args(self, args):
-        pass
+        if not args.csv:
+            # Currently, there is a table called 'nectar_qcif_overrides'
+            # but it is populated manually and doesn't match what is in
+            # the CSV file.
+            sys.stderr.write('DB upload for "homes" not supported: use --csv\n')
+            sys.exit(1)
 
     def run(self, args):
+        separator = "," if args.csv else " "
         self.setup_allocations()
         self.setup_keystone()
         allocations = self.allocations.get_allocations()
@@ -52,11 +58,12 @@ class Homes(Processor):
                     if tm in inst_dict:
                         institutions.add(inst_dict[tm])
                 if args.legacy:
-                    records.append([proj.id, ",".join(institutions)])
+                    records.append([proj.id,
+                                    separator.join(institutions)])
                 else:
                     for inst in institutions:
                         records.append([proj.id, inst])
-        if csv:
+        if args.csv:
             self.csv_output(headings, records, filename=args.filename)
         else:
             self.db_insert(headings, records,
