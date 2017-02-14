@@ -6,6 +6,7 @@ import ConfigParser
 import csv
 
 import mysql.connector
+import os_client_config
 
 from keystoneclient.v3 import client as ks_client
 from keystoneauth1.identity import v3 as ks_identity
@@ -63,35 +64,18 @@ class Processor:
 
     def setup_nova(self):
         if not self.nova:
-            self.nova = nova_client.Client(2, self.username,
-                                           self.password,
-                                           self.tenant,
-                                           self.url,
-                                           service_type='compute',
-                                           http_log_debug=self.debug)
-
-    def setup_authsession(self):
-        if not self.auth:
-            self.auth = ks_identity.Password(username=self.username,
-                                             password=self.password,
-                                             project_name=self.tenant,
-                                             user_domain_id="default",
-                                             project_domain_id="default",
-                                             auth_url=self.url)
-            self.session = ks_session.Session(auth=self.auth)
+            self.nova = os_client_config.make_client('compute',
+                                                     http_log_debug=self.debug)
 
     def setup_keystone(self):
         if not self.keystone:
-            self.setup_authsession()
-            self.keystone = ks_client.Client(session=self.session,
-                                             debug=self.debug)
+            self.keystone = os_client_config.make_client('identity',
+                                                         debug=self.debug)
 
     def setup_neutron(self):
         if not self.neutron:
-            self.setup_authsession()
-            self.neutron = neutron_client.Client(session=self.session,
-                                                 region_name=self.region,
-                                                 http_log_debug=self.debug)
+            self.neutron = os_client_config.make_client('network',
+                                                        http_log_debug=self.debug)
 
     def setup_allocations(self):
         if not self.allocations:

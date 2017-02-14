@@ -9,6 +9,7 @@ setup(name='qcif-extract',
       license='MIT',
       packages=['extract'],
       install_requires=[
+          'os-client-config',
           'python-novaclient<=3.2.0',
           'python-neutronclient<=4.2.0',
           'python-keystoneclient<=2.3.1',
