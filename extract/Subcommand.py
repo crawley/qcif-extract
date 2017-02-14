@@ -8,12 +8,7 @@ import csv
 import mysql.connector
 import os_client_config
 
-from keystoneclient.v3 import client as ks_client
-from keystoneauth1.identity import v3 as ks_identity
-from keystoneauth1 import session as ks_session
 from keystoneclient.exceptions import NotFound
-from novaclient import client as nova_client
-from neutronclient.v2_0 import client as neutron_client
 from allocationsclient import Client as allocations_client
 
 
@@ -32,13 +27,6 @@ class Processor:
             logging.getLogger('iso8601').setLevel(logging.WARNING)
             
         self.config = self.load_config(args.config)
-        self.username = os.environ.get('OS_USERNAME')
-        self.password = os.environ.get('OS_PASSWORD')
-        self.tenant = os.environ.get('OS_TENANT_NAME')
-        self.url = os.environ.get('OS_AUTH_URL')
-        self.region = os.environ.get('OS_REGION_NAME', None)
-        self.auth = None
-        self.session = None
         self.nova = None
         self.neutron = None
         self.keystone = None

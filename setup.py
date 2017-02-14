@@ -10,9 +10,9 @@ setup(name='qcif-extract',
       packages=['extract'],
       install_requires=[
           'os-client-config',
-          'python-novaclient<=3.2.0',
-          'python-neutronclient<=4.2.0',
-          'python-keystoneclient<=2.3.1',
+          'python-novaclient',
+          'python-neutronclient',
+          'python-keystoneclient',
           'mysql-connector-python'
       ],
       zip_safe=False)

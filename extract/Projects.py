@@ -32,6 +32,8 @@ class Projects(Processor):
         year = int(args.year)
         month = int(args.month)
         self.start = datetime.datetime(year, month, 1)
+        self.year = year
+        self.month = month
         month = month + 1
         if month > 12:
             month = 1
@@ -48,8 +50,8 @@ class Projects(Processor):
                         "instance_count", "instance_hours", "vcpu_hours",
                         "memory_hours_mb", "disk_hours_gb"]
             usage = map(lambda u: [u.tenant_id,
-                                   tenants[u.tenant_id].name \
-                                   if u.tenant_id in tenants else None,
+                                   projects[u.tenant_id].name \
+                                   if u.tenant_id in projects else None,
                                    len(u.server_usages),
                                    u.total_hours,
                                    u.total_vcpus_usage,
@@ -65,8 +67,8 @@ class Projects(Processor):
             usage = map(lambda u: [self.year,
                                    self.month,
                                    u.tenant_id,
-                                   tenants[u.tenant_id].name \
-                                   if u.tenant_id in tenants else None,
+                                   projects[u.tenant_id].name \
+                                   if u.tenant_id in projects else None,
                                    len(u.server_usages),
                                    u.total_hours,
                                    u.total_vcpus_usage,
@@ -76,9 +78,9 @@ class Projects(Processor):
                                              detailed=True))
             
         if args.csv:
-            self.csv_output(headings, records, filename=args.filename)
+            self.csv_output(headings, usage, filename=args.filename)
         else:
-            self.db_insert(headings, records,
+            self.db_insert(headings, usage,
                            args.tablename or "nectar_usage",
                            replaceAll=True)
 
