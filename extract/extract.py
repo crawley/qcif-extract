@@ -9,6 +9,7 @@ from Subcommand import Processor
 from General import General
 from Managers import Managers
 from Homes import Homes
+from Projects import Projects
 
 def help(args):
     if args.name:
@@ -29,6 +30,9 @@ def managers(args):
 
 def homes(args):
     Homes().do_run(args)
+
+def projects(args):
+    Projects().do_run(args)
 
 def collect_args():
     parser = argparse.ArgumentParser(
@@ -72,6 +76,10 @@ def collect_args():
                                          help='extract allocation homes')
     Homes.build_parser(homes_parser, homes)
     
+    projects_parser = subparsers.add_parser('projects',
+                                            help='extract project usage')
+    Projects.build_parser(projects_parser, projects)
+    
     help_parser = subparsers.add_parser('help',
                                         help='print subcommand help')
     help_parser.add_argument('name', nargs='?', default=None,
@@ -81,6 +89,7 @@ def collect_args():
                                  'help': help_parser,
                                  'managers': managers_parser,
                                  'homes': homes_parser,
+                                 'projects': projects_parser,
                                  'general': general_parser})
     return parser
 
