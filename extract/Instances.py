@@ -68,12 +68,17 @@ class Instances(Usages):
             except Exception:
                 traceback.print_exc(file=sys.stdout)
 
-        headings = ["Tenant ID", "Tenant Name",
-                    "Instance id", "Instance name",
-                    "Instance state", "Flavour",
-                    "Instance hours", "vCPUs", "Memory (MB)",
-                    "Disk (GB)", "AZ"]
-        self.csv_output(headings, usage, filename=args.filename)
+        headings = ["tenant_id", "tenant_name",
+                    "instance_id", "instance_name",
+                    "instance_state", "instance_flavour",
+                    "instance_hours", "vcpus", "memory_mb",
+                    "disk_gb", "az"]
+        if args.csv:
+            self.csv_output(headings, usage, filename=args.filename)
+        else:
+            self.db_insert(headings, usage,
+                           args.tablename or "nectar_instances",
+                           replaceAll=True)
 
 
     def deleted(self, tenant_id, name, instance_id):
