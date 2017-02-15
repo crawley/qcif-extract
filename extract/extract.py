@@ -10,6 +10,7 @@ from General import General
 from Managers import Managers
 from Homes import Homes
 from Projects import Projects
+from Instances import Instances
 
 def help(args):
     if args.name:
@@ -33,6 +34,9 @@ def homes(args):
 
 def projects(args):
     Projects().do_run(args)
+
+def instances(args):
+    Instances().do_run(args)
 
 def collect_args():
     parser = argparse.ArgumentParser(
@@ -80,6 +84,10 @@ def collect_args():
                                             help='extract project usage')
     Projects.build_parser(projects_parser, projects)
     
+    instances_parser = subparsers.add_parser('instances',
+                                            help='extract instance usage')
+    Instances.build_parser(instances_parser, instances)
+    
     help_parser = subparsers.add_parser('help',
                                         help='print subcommand help')
     help_parser.add_argument('name', nargs='?', default=None,
@@ -90,6 +98,7 @@ def collect_args():
                                  'managers': managers_parser,
                                  'homes': homes_parser,
                                  'projects': projects_parser,
+                                 'instances': instances_parser,
                                  'general': general_parser})
     return parser
 

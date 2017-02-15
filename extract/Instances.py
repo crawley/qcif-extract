@@ -6,19 +6,20 @@ import collections
 
 from Usages import Usages
 
-class Projects(Usages):
+class Instances(Usages):
     def __init__(self):
         Usages.__init__(self)
 
     @staticmethod
     def build_parser(parser, func):
-        parser.epilog = 'Extracts NeCTAR project usage from Nova'
+        parser.epilog = 'Extracts NeCTAR instance usage from Nova'
         Usages.build_parser(parser, func)
-        
-    def check_args(self, args):
-        Usages.check_args(self, args)        
 
+    def check_args(self, args):
+        Usages.check_args(self, args)
+        
     def run(self, args):
+        exit(1)
         self.setup_nova()
         self.setup_keystone()
         projects = self.keystone.projects.list()
