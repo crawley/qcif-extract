@@ -22,7 +22,7 @@ class Usages(Processor):
                             help='Month to extract data for (1 to 12)')
         parser.add_argument('--project', metavar='NAME_OR_ID',
                             default=None,
-                            help='Restrict to a single project')
+                            help='Restrict to a single NeCTAR project')
         parser.set_defaults(subcommand=func)
 
     def check_args(self, args):

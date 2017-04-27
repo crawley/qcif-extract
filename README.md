@@ -59,3 +59,9 @@ The global options are:
     `~/.mailout.cfg`.
   - `-d` `--debug` - enables extra debugging.  For example, this allows you
     to see OpenStack requests and responses.
+  - `--csv` - selects CSV output rather than database update
+  - `-f` `--filename` `<file>` - CSV output filename; defaults to stdout
+  - `-t` `--tablename` `<tablename>` - Alternate database tablename.
+  - `-D` `--dryrun` - Dry run-mode.  Does not connect to the database,
+    but outputs the SQL statements that would be executes and the
+    associated row data. 

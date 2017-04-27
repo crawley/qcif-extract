@@ -33,6 +33,7 @@ class Processor:
         self.allocations = None
 
         if not args.csv:
+            self.dryrun = args.dryrun
             self.db_username = self.config.get('DB', 'user')
             self.db_password = self.config.get('DB', 'password')
             self.db_host = self.config.get('DB', 'host')
@@ -40,7 +41,6 @@ class Processor:
             assert self.db_database
     
         self.run(args);
-
         
     def check_args(self):
         pass
@@ -85,21 +85,36 @@ class Processor:
 
     def db_insert(self, columns, rows, tablename, replaceAll=False):
         assert tablename
-        cnx = mysql.connector.connect(user=self.db_username, database=self.db_database,
-                                      password=self.db_password, host=self.db_host)
-        cursor = cnx.cursor()
+        if self.dryrun:
+            print "DB host %s, User %s, Schema %s" % \
+                (self.db_host, self.db_username, self.db_database)
+        else:
+            cnx = mysql.connector.connect(user=self.db_username,
+                                          database=self.db_database,
+                                          password=self.db_password,
+                                          host=self.db_host)
+            cursor = cnx.cursor()
 
         if replaceAll:
             delete_sql = "DELETE FROM %s" % (tablename)
-            cursor.execute(delete_sql, [])
+            if self.dryrun:
+                print delete_sql
+            else:
+                cursor.execute(delete_sql, [])
         
         insert_sql = "INSERT INTO %s ( %s ) VALUES ( %s )" % (
-            tablename, ", ".join(columns), ", ".join(map(lambda x: "%s", columns)))
+            tablename, ", ".join(columns),
+            ", ".join(map(lambda x: "%s", columns)))
+        if self.dryrun:
+            print insert_sql
+            
         for row in rows:
-            cursor.execute(insert_sql, row)
+            if self.dryrun:
+                print "row: %s" % (row)
+            else:
+                cursor.execute(insert_sql, row)
 
-        cnx.commit()
-        cursor.close()
-        cnx.close()
-        
-    
+        if not self.dryrun:
+            cnx.commit()
+            cursor.close()
+            cnx.close()

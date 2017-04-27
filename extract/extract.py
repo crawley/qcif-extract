@@ -46,6 +46,10 @@ def collect_args():
                         default=False,
                         help='Enable debugging')
     
+    parser.add_argument('-D', '--dryrun', action='store_true',
+                        default=False,
+                        help='Dry run the database updates')
+    
     parser.add_argument('--csv', action='store_true',
                         default=False,
                         help='Output CSV instead of updating database')
