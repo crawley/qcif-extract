@@ -13,6 +13,9 @@ class Projects(Usages):
     @staticmethod
     def build_parser(parser, func):
         parser.epilog = 'Extracts NeCTAR project usage from Nova'
+        parser.add_argument('--legacy', action='store_true',
+                            default=False,
+                            help='Legacy csv format')
         Usages.build_parser(parser, func)
         
     def check_args(self, args):
@@ -21,21 +24,20 @@ class Projects(Usages):
     def run(self, args):
         self.setup_nova()
         self.setup_keystone()
-        projects = self.keystone.projects.list()
+        self.fetch_usage(args)
         if args.legacy:
             headings = ["tenant_id", "tenant_name",
                         "instance_count", "instance_hours", "vcpu_hours",
                         "memory_hours_mb", "disk_hours_gb"]
             usage = map(lambda u: [u.tenant_id,
-                                   projects[u.tenant_id].name \
-                                   if u.tenant_id in projects else None,
+                                   self.projects[u.tenant_id].name \
+                                   if u.tenant_id in self.projects else None,
                                    len(u.server_usages),
                                    u.total_hours,
                                    u.total_vcpus_usage,
                                    u.total_memory_mb_usage,
                                    u.total_local_gb_usage],
-                        self.nova.usage.list(self.start, self.end,
-                                             detailed=True))
+                        self.raw_usage)
             
         else:
             headings = ["nu_year", "nu_month", "tenant_id", "tenant_name",
@@ -44,15 +46,14 @@ class Projects(Usages):
             usage = map(lambda u: [self.year,
                                    self.month,
                                    u.tenant_id,
-                                   projects[u.tenant_id].name \
-                                   if u.tenant_id in projects else None,
+                                   self.projects[u.tenant_id].name \
+                                   if u.tenant_id in self.projects else None,
                                    len(u.server_usages),
                                    u.total_hours,
                                    u.total_vcpus_usage,
                                    u.total_memory_mb_usage,
                                    u.total_local_gb_usage],
-                        self.nova.usage.list(self.start, self.end,
-                                             detailed=True))
+                        self.raw_usage)
             
         if args.csv:
             self.csv_output(headings, usage, filename=args.filename)

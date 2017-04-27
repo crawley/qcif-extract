@@ -4,6 +4,8 @@ import argparse
 import datetime
 import collections
 
+from keystoneclient.exceptions import NotFound
+
 from Subcommand import Processor
 
 class Usages(Processor):
@@ -14,14 +16,13 @@ class Usages(Processor):
     def build_parser(parser, func):
         parser.add_argument('--year', metavar='YEAR-NO', type=int,
                             default=None,
-                            help='Year to extract data for')
+                            help='Year to extract data for (e.g. 2017)')
         parser.add_argument('--month', metavar='MONTH-NO', type=int,
                             default=None,
-                            help='Month to extract data for')
-        parser.add_argument('--legacy', action='store_true',
-                            default=False,
-                            help='Legacy csv format')
-    
+                            help='Month to extract data for (1 to 12)')
+        parser.add_argument('--project', metavar='NAME_OR_ID',
+                            default=None,
+                            help='Restrict to a single project')
         parser.set_defaults(subcommand=func)
 
     def check_args(self, args):
@@ -39,5 +40,16 @@ class Usages(Processor):
             year = year + 1
         self.end = datetime.datetime(year, month, 1)
         
-    def run(self, args):
-        pass
+    def fetch_usage(self, args):
+        if args.project:
+            try:
+                project = self.keystone.projects.get(args.project)
+            except NotFound:
+                project = self.keystone.projects.find(name=args.project)
+            self.projects = [project]
+            self.raw_usage = [self.nova.usage.get(project.id, self.start,
+                                                  self.end)]
+        else:
+            self.projects = self.keystone.projects.list()
+            self.raw_usage = self.nova.usage.list(self.start, self.end,
+                                                  detailed=True)

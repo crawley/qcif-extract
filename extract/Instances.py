@@ -22,15 +22,13 @@ class Instances(Usages):
     def run(self, args):
         self.setup_nova()
         self.setup_keystone()
-        projects = self.keystone.projects.list()
+        self.fetch_usage(args)
 
-        raw_usage = self.nova.usage.list(self.start, self.end, detailed=True)
-        
         usage = []
-        for u in raw_usage:
+        for u in self.raw_usage:
             tenant_id = u.tenant_id
-            tenant_name = projects[tenant_id].name \
-                          if tenant_id in projects else None
+            tenant_name = self.projects[tenant_id].name \
+                          if tenant_id in self.projects else None
 
             # The Nova API doesn't allow "show" on deleted instances, but
             # we can get the info using "list --deleted".  The problem is
