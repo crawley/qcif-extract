@@ -56,7 +56,7 @@ The following commands are currently available:
 The global options are:
 
   - `-c` `--config` `<file>` - selects a config file.  This defaults to
-    `~/.mailout.cfg`.
+    `~/.extract.cfg`.
   - `-d` `--debug` - enables extra debugging.  For example, this allows you
     to see OpenStack requests and responses.
   - `--csv` - selects CSV output rather than database update
