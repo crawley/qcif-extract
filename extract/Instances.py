@@ -67,7 +67,7 @@ class Instances(Usages):
                            iu['state'], iu['flavor'], iu['hours'],
                            iu['vcpus'], iu['memory_mb'], iu['local_gb'], az]
                     if args.qriscloud:
-                        if az == 'qriscloud':
+                        if az == 'QRIScloud':
                             usage.append([self.year, self.month] + row)
                     else:
                         usage.append(row)
