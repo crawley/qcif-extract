@@ -14,6 +14,9 @@ class Instances(Usages):
     @staticmethod
     def build_parser(parser, func):
         parser.epilog = 'Extracts NeCTAR instance usage from Nova'
+        parser.add_argument('--qriscloud', action='store_true',
+                            default=False,
+                            help='Populate the "nectar_qriscloud_instances" table.')
         Usages.build_parser(parser, func)
 
     def check_args(self, args):
@@ -57,12 +60,17 @@ class Instances(Usages):
                                 print('Cannot find instance {0} in {1}'
                                       .format(instance_id, u.tenant_id))
                     if instance is None:
-                        instance = {'OS-EXT-AZ:availability_zone': 'unknown'}
-
-                    usage.append([tenant_id, tenant_name, instance_id, name,
-                                  iu['state'], iu['flavor'], iu['hours'],
-                                  iu['vcpus'], iu['memory_mb'], iu['local_gb'],
-                                  instance['OS-EXT-AZ:availability_zone']])
+                        az = 'unknown'
+                    else:
+                        az = instance['OS-EXT-AZ:availability_zone']
+                    row = [tenant_id, tenant_name, instance_id, name,
+                           iu['state'], iu['flavor'], iu['hours'],
+                           iu['vcpus'], iu['memory_mb'], iu['local_gb'], az]
+                    if args.qriscloud:
+                        if az == 'qriscloud':
+                            usage.append([self.year, self.month] + row)
+                    else:
+                        usage.append(row)
             except Exception:
                 traceback.print_exc(file=sys.stdout)
 
@@ -71,8 +79,14 @@ class Instances(Usages):
                     "instance_state", "instance_flavour",
                     "instance_hours", "vcpus", "memory_mb",
                     "disk_gb", "az"]
+        if args.qriscloud:
+            headings = ['nu_year', 'nu_month'] + headings
         if args.csv:
             self.csv_output(headings, usage, filename=args.filename)
+        elif args.qriscloud:
+            self.db_insert(headings, usage,
+                           args.tablename or "nectar_qriscloud_instances",
+                           replaceAll=False)
         else:
             self.db_insert(headings, usage,
                            args.tablename or "nectar_instances",
