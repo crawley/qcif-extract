@@ -82,9 +82,24 @@ class Processor:
         if filename is not None:
             fp.close()
 
-
-    def db_insert(self, columns, rows, tablename, replaceAll=False):
+    def db_insert(self, columns, rows, tablename, replaceAll=False, replace=None):
         assert tablename
+        assert not replaceAll or replace is None
+        if replaceAll:
+            delete_sql = "DELETE FROM %s" % (tablename)
+            delete_params = [[]]
+        elif replace is not None:
+            delete_sql = "DELETE FROM %s WHERE %s" % (tablename, replace['where'])
+            delete_params = [replace['params']]
+        else:
+            delete_sql = delete_params = None
+            
+        insert_sql = "INSERT INTO %s ( %s ) VALUES ( %s )" % (
+            tablename, ", ".join(columns),
+            ", ".join(map(lambda x: "%s", columns)))
+        self._db_transaction(delete_sql, delete_params, insert_sql, rows)  
+
+    def _db_transaction(self, prep_sql, prep_params, insert_sql, insert_rows):
         if self.dryrun:
             print "DB host %s, User %s, Schema %s" % \
                 (self.db_host, self.db_username, self.db_database)
@@ -95,26 +110,22 @@ class Processor:
                                           host=self.db_host)
             cursor = cnx.cursor()
 
-        if replaceAll:
-            delete_sql = "DELETE FROM %s" % (tablename)
-            if self.dryrun:
-                print delete_sql
-            else:
-                cursor.execute(delete_sql, [])
-        
-        insert_sql = "INSERT INTO %s ( %s ) VALUES ( %s )" % (
-            tablename, ", ".join(columns),
-            ", ".join(map(lambda x: "%s", columns)))
-        if self.dryrun:
-            print insert_sql
-            
-        for row in rows:
-            if self.dryrun:
-                print "row: %s" % (row)
-            else:
-                cursor.execute(insert_sql, row)
+        if prep_sql:
+            self._db_execute(prep_sql, prep_params)
+        self._db_execute(insert_sql, insert_rows)
 
         if not self.dryrun:
             cnx.commit()
             cursor.close()
             cnx.close()
+            
+    def _db_execute(self, sql, param_sets):
+        if self.dryrun:
+            print "sql: %s" % (sql)
+            
+        for params in param_sets:
+            if self.dryrun:
+                print "params: %s" % (params)
+            else:
+                cursor.execute(sql, params)
+
