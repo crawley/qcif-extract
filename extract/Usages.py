@@ -39,6 +39,9 @@ class Usages(Processor):
             month = 1
             year = year + 1
         self.end = datetime.datetime(year, month, 1)
+        if args.project is not None and not (args.csv or args.dryrun):
+            sys.stderr.write('Running with --project against a database could trash data.\n')
+            sys.exit(1)
         
     def fetch_usage(self, args):
         if args.project:
