@@ -63,5 +63,19 @@ The global options are:
   - `-f` `--filename` `<file>` - CSV output filename; defaults to stdout
   - `-t` `--tablename` `<tablename>` - Alternate database tablename.
   - `-D` `--dryrun` - Dry run-mode.  Does not connect to the database,
-    but outputs the SQL statements that would be executes and the
-    associated row data. 
+    but outputs the SQL statements that would be executed and the
+    associated row / parameter data. 
+
+The functionality / parameters for commands varies, depending on specific
+requirements for reporting:
+
+  - The `instances` and `projects` commands require a year and month for
+    the usage information.  They will typically *replace* the table rows
+    for that year and month.  Other commands will replace all rows in the
+    associated table.
+  - The `instances` command has a `--qriscloud` option.  If set, the
+    `nectar_qriscloud_usage` table is updated.  If not, the `nectar_usage`
+    table is updated.
+  - The `--legacy` option (where available) causes an older "schema" to
+    be used for the CSV or table.
+  - The `homes` command only works with `--csv`.
