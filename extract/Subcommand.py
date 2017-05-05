@@ -103,6 +103,7 @@ class Processor:
         if self.dryrun:
             print "DB host %s, User %s, Schema %s" % \
                 (self.db_host, self.db_username, self.db_database)
+            cursor = None
         else:
             cnx = mysql.connector.connect(user=self.db_username,
                                           database=self.db_database,
