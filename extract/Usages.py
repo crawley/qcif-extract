@@ -49,10 +49,13 @@ class Usages(Processor):
                 project = self.keystone.projects.get(args.project)
             except NotFound:
                 project = self.keystone.projects.find(name=args.project)
-            self.projects = [project]
+            projects = [project]
             self.raw_usage = [self.nova.usage.get(project.id, self.start,
                                                   self.end)]
         else:
-            self.projects = self.keystone.projects.list()
+            projects = self.keystone.projects.list()
             self.raw_usage = self.nova.usage.list(self.start, self.end,
                                                   detailed=True)
+        self.projects = {}
+        for p in projects:
+            self.projects[p.id] = p
