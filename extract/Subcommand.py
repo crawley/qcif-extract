@@ -111,15 +111,15 @@ class Processor:
             cursor = cnx.cursor()
 
         if prep_sql:
-            self._db_execute(prep_sql, prep_params)
-        self._db_execute(insert_sql, insert_rows)
+            self._db_execute(cursor, prep_sql, prep_params)
+        self._db_execute(cursor, insert_sql, insert_rows)
 
         if not self.dryrun:
             cnx.commit()
             cursor.close()
             cnx.close()
             
-    def _db_execute(self, sql, param_sets):
+    def _db_execute(self, cursor, sql, param_sets):
         if self.dryrun:
             print "sql: %s" % (sql)
             
