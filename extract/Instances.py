@@ -87,7 +87,7 @@ class Instances(Usages):
             self.db_insert(headings, usage,
                            args.tablename or "nectar_qriscloud_instances",
                            replace={
-                               'where': "nu_year = ? and nu_month = ?",
+                               'where': "nu_year = %s and nu_month = %s",
                                'params': [self.year, self.month]})
         else:
             self.db_insert(headings, usage,

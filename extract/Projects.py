@@ -53,5 +53,5 @@ class Projects(Usages):
             self.db_insert(headings, usage,
                            args.tablename or "nectar_usage",
                            replace={
-                               'where': "nu_year = ? and nu_month = ?",
+                               'where': "nu_year = %s and nu_month = %s",
                                'params': [self.year, self.month]})
