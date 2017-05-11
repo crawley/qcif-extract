@@ -102,7 +102,7 @@ class Instances(Usages):
         # name.  After that we do a query to fetch all deleted instances for
         # the tenant ...
         if name in self.cache:  # Lookup instances for name
-            instances = cache[name]
+            instances = self.cache[name]
         elif len(self.cache) < 4:  # Caching for a name
             try:
                 instances = self.nova.servers.list(
