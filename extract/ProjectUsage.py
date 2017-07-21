@@ -6,7 +6,7 @@ import collections
 
 from Usages import Usages
 
-class Projects(Usages):
+class ProjectUsage(Usages):
     def __init__(self):
         Usages.__init__(self)
 

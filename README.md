@@ -47,11 +47,11 @@ extract <global options> <command> <command-specific options>
 The following commands are currently available:
 
   - `help` - command self-documentation
-  - `instances` - instance-level usage
   - `homes` - allocation homes
   - `managers` - allocation managers
   - `general` - general allocation info
-  - `project` - project-level usage
+  - `project-usage` - project-level usage
+  - `instance-usage` - instance-level usage
 
 The global options are:
 
@@ -69,11 +69,11 @@ The global options are:
 The functionality / parameters for commands varies, depending on specific
 requirements for reporting:
 
-  - The `instances` and `projects` commands require a year and month for
-    the usage information.  They will typically *replace* the table rows
+  - The `instance-usage` and `project-usage` commands require a year and month
+    for the usage information.  They will typically *replace* the table rows
     for that year and month.  Other commands will replace all rows in the
     associated table.
-  - The `instances` command has a `--qriscloud` option.  If set, the
+  - The `instance-usage` command has a `--qriscloud` option.  If set, the
     `nectar_qriscloud_usage` table is updated.  If not, the `nectar_usage`
     table is updated.
   - The `--legacy` option (where available) causes an older "schema" to

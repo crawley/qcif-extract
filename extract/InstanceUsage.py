@@ -7,7 +7,7 @@ import traceback
 
 from Usages import Usages
 
-class Instances(Usages):
+class InstanceUsage(Usages):
     def __init__(self):
         Usages.__init__(self)
 
