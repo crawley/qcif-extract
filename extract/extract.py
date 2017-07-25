@@ -9,6 +9,7 @@ from Subcommand import Processor
 from General import General
 from Managers import Managers
 from Homes import Homes
+from Projects import Projects
 from ProjectUsage import ProjectUsage
 from InstanceUsage import InstanceUsage
 
@@ -34,6 +35,9 @@ def homes(args):
 
 def project_usage(args):
     ProjectUsage().do_run(args)
+
+def projects(args):
+    Projects().do_run(args)
 
 def instance_usage(args):
     InstanceUsage().do_run(args)
@@ -84,10 +88,14 @@ def collect_args():
                                          help='extract allocation homes')
     Homes.build_parser(homes_parser, homes)
     
+    projects_parser = subparsers.add_parser('projects',
+                                            help='extract projects')
+    Projects.build_parser(projects_parser, projects)
+
     project_usage_parser = subparsers.add_parser('project-usage',
                                                  help='extract project usage')
     ProjectUsage.build_parser(project_usage_parser, project_usage)
-    
+
     instance_usage_parser = subparsers.add_parser('instance-usage',
                                                   help='extract instance usage')
     InstanceUsage.build_parser(instance_usage_parser, instance_usage)
@@ -101,6 +109,7 @@ def collect_args():
                                  'help': help_parser,
                                  'managers': managers_parser,
                                  'homes': homes_parser,
+                                 'projects': projects_parser,
                                  'project-usage': project_usage_parser,
                                  'instance-usage': instance_usage_parser,
                                  'general': general_parser})
