@@ -6,7 +6,7 @@ import ConfigParser
 import csv
 
 import mysql.connector
-import os_client_config
+from os_client_config import make_client 
 
 from keystoneclient.exceptions import NotFound
 from allocationsclient import Client as allocations_client
@@ -52,18 +52,18 @@ class Processor:
 
     def setup_nova(self):
         if not self.nova:
-            self.nova = os_client_config.make_client('compute',
-                                                     http_log_debug=self.debug)
+            self.nova = make_client('compute',
+                                    http_log_debug=self.debug)
 
     def setup_keystone(self):
         if not self.keystone:
-            self.keystone = os_client_config.make_client('identity',
-                                                         debug=self.debug)
+            self.keystone = make_client('identity',
+                                        debug=self.debug)
 
     def setup_neutron(self):
         if not self.neutron:
-            self.neutron = os_client_config.make_client('network',
-                                                        http_log_debug=self.debug)
+            self.neutron = make_client('network',
+                                       http_log_debug=self.debug)
 
     def setup_allocations(self):
         if not self.allocations:
@@ -82,14 +82,16 @@ class Processor:
         if filename is not None:
             fp.close()
 
-    def db_insert(self, columns, rows, tablename, replaceAll=False, replace=None):
+    def db_insert(self, columns, rows, tablename,
+                  replaceAll=False, replace=None):
         assert tablename
         assert not replaceAll or replace is None
         if replaceAll:
             delete_sql = "DELETE FROM %s" % (tablename)
             delete_params = [[]]
         elif replace is not None:
-            delete_sql = "DELETE FROM %s WHERE %s" % (tablename, replace['where'])
+            delete_sql = "DELETE FROM %s WHERE %s" % (
+                tablename, replace['where'])
             delete_params = [replace['params']]
         else:
             delete_sql = delete_params = None
