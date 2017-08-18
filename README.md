@@ -52,6 +52,8 @@ The following commands are currently available:
   - `general` - general allocation info
   - `project-usage` - project-level usage
   - `instance-usage` - instance-level usage
+  - `nextcloud-usage` - Nextcloud usage
+  - `nextcloud-login` - Nexcloud login records
 
 The global options are:
 
@@ -79,3 +81,5 @@ requirements for reporting:
   - The `--legacy` option (where available) causes an older "schema" to
     be used for the CSV or table.
   - The `homes` command only works with `--csv`.
+  - The `nextcloud-login` and `nextcloud-usage` commands read from
+    CSV files.

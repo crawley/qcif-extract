@@ -12,6 +12,8 @@ from Homes import Homes
 from Projects import Projects
 from ProjectUsage import ProjectUsage
 from InstanceUsage import InstanceUsage
+from NextcloudLogin import NextcloudLogin
+from NextcloudUsage import NextcloudUsage
 
 def help(args):
     if args.name:
@@ -41,6 +43,12 @@ def projects(args):
 
 def instance_usage(args):
     InstanceUsage().do_run(args)
+
+def nextcloud_login(args):
+    NextcloudLogin().do_run(args)
+
+def nextcloud_usage(args):
+    NextcloudUsage().do_run(args)
 
 def collect_args():
     parser = argparse.ArgumentParser(
@@ -100,6 +108,14 @@ def collect_args():
                                                   help='extract instance usage')
     InstanceUsage.build_parser(instance_usage_parser, instance_usage)
     
+    nextcloud_login_parser = subparsers.add_parser('nextcloud-login',
+                                              help='extract Nextcloud logins')
+    NextcloudLogin.build_parser(nextcloud_login_parser, nextcloud_login)
+    
+    nextcloud_usage_parser = subparsers.add_parser('nextcloud-usage',
+                                              help='extract Nextcloud usage')
+    NextcloudUsage.build_parser(nextcloud_usage_parser, nextcloud_usage)
+    
     help_parser = subparsers.add_parser('help',
                                         help='print subcommand help')
     help_parser.add_argument('name', nargs='?', default=None,
@@ -112,6 +128,8 @@ def collect_args():
                                  'projects': projects_parser,
                                  'project-usage': project_usage_parser,
                                  'instance-usage': instance_usage_parser,
+                                 'nextcloud-login': nextcloud_login_parser,
+                                 'nextcloud-usage': nextcloud_usage_parser,
                                  'general': general_parser})
     return parser
 
