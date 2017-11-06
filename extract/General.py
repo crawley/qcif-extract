@@ -21,10 +21,11 @@ class General(Processor):
     def run(self, args):
         self.setup_allocations()
         allocations = self.allocations.get_allocations()
+        # print allocations 
         fields_to_report = [
-            ("tenant_id", lambda x: x['tenant_uuid']),
-            ("tenant_name", lambda x: x['tenant_name']),
-            ("project_name", lambda x: x['project_name']),
+            ("tenant_id", lambda x: x['project_id']),
+            ("tenant_name", lambda x: x['project_name']),
+            ("project_name", lambda x: x['project_description']),
             ("alloc_home",
              lambda x: x['allocation_home'] if 'allocation_home' in x and
              x['allocation_home'] is not None else ""),
