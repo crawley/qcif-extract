@@ -130,5 +130,11 @@ class Processor:
             if self.dryrun:
                 print "params: %s" % (params)
             else:
-                cursor.execute(sql, params)
+                try:
+                    cursor.execute(sql, params)
+                except Exception:
+                    t, v, tb = sys.exc_info()
+                    print "sql: %s" % (sql)
+                    print "params: %s" % (params)
+                    raise t, v, tb
 
