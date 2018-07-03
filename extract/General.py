@@ -44,6 +44,11 @@ class General(Processor):
             ("end_date", lambda x: x['end_date']),
         ]
 
+        allocations = filter(lambda a: a['instance_quota'] < 65536 and \
+                             a['core_quota'] < 65536 and \
+                             a['ram_quota'] < 65536,
+                             allocations)
+
         if args.csv:
             self.csv_output(map(lambda x: x[0], fields_to_report),
                             map(lambda alloc: map(
