@@ -54,8 +54,39 @@ class Usages(Processor):
                                                   self.end)]
         else:
             projects = self.keystone.projects.list()
-            self.raw_usage = self.nova.usage.list(self.start, self.end,
-                                                  detailed=True)
+            # The following worked prior to Ocata
+            #
+            # self.raw_usage = self.nova.usage.list(self.start, self.end,
+            #                                       detailed=True)
+            usages = {}
+            usage_list = self.nova.usage.list(self.start, self.end,
+                                              detailed=True)
+            _merge_usage_list(usages, usage_list)
+            while True:
+                marker = _get_marker(usage_list)
+                usage_list = self.nova.usage.list(self.start, self.end,
+                                                  marker=marker, detailed=True)
+                if len(usage_list) == 0:
+                    break
+                _merge_usage_list(usages, usage_list)
+            self.raw_usage = usages.values()
         self.projects = {}
         for p in projects:
             self.projects[p.id] = p
+
+def _get_marker(usage_list):
+    return usage_list[-1].server_usages[-1]['instance_id']
+
+def _merge_usage_list(usages, usage_list):
+    for u in usage_list:
+        if u.tenant_id in usages:
+            _merge_usage(usages[u.tenant_id], u)
+        else:
+            usages[u.tenant_id] = u
+
+def _merge_usage(usage, usage2):
+    usage.server_usages.extend(usage2.server_usages)
+    usage.total_hours += usage2.total_hours
+    usage.total_memory_mb_usage += usage2.total_memory_mb_usage
+    usage.total_vcpus_usage += usage2.total_vcpus_usage
+    usage.total_local_gb_usage += usage2.total_local_gb_usage

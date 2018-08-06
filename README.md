@@ -20,7 +20,10 @@ You need python 2 with setuptools.  Using "virtualenv" is recommended:
     - clone the source tree for "mysql/mysql-connector-python" from github.
     - cd to the git tree
     - run "python setup install" to install into your venv.
-      
+
+  - To get the usage extraction to work properly, you need to force the
+    Nova client library to use version 2.40 or later.  One way to get this
+    to work is to add "OS_COMPUTE_API_VERSION=2.40" to the environment.
 
 ## Installation from source:
 
