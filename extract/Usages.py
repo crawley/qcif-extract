@@ -85,8 +85,19 @@ def _merge_usage_list(usages, usage_list):
             usages[u.tenant_id] = u
 
 def _merge_usage(usage, usage2):
-    usage.server_usages.extend(usage2.server_usages)
-    usage.total_hours += usage2.total_hours
-    usage.total_memory_mb_usage += usage2.total_memory_mb_usage
-    usage.total_vcpus_usage += usage2.total_vcpus_usage
-    usage.total_local_gb_usage += usage2.total_local_gb_usage
+    # The novaclient code simply concatenates the server_usages
+    # lists and accumulates the totals, but that gives duplicates
+    map = {}
+    for u in usage.server_usages:
+        map[u['instance_id']] = u
+    for u in usage2.server_usages:
+        map[u['instance_id']] = u
+    usage.server_usages = map.values()
+    usage.total_hours = reduce((lambda x, u: x + u['hours']),
+                               map.values(), 0) 
+    usage.total_memory_mb_usage = reduce((lambda x, u: x + u['memory_mb']),
+                                         map.values(), 0) 
+    usage.total_vcpus_usage = reduce((lambda x, u: x + u['vcpus']),
+                                     map.values(), 0) 
+    usage.total_local_gb_usage = reduce((lambda x, u: x + u['local_gb']),
+                                        map.values(), 0) 
