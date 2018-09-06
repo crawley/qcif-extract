@@ -9,8 +9,9 @@ import mysql.connector
 from os_client_config import make_client 
 
 from keystoneclient.exceptions import NotFound
-from allocationsclient import Client as allocations_client
 
+from keystoneauth1 import loading, session
+from nectarallocationclient import client
 
 class Processor:
     def __init__(self):
@@ -67,7 +68,19 @@ class Processor:
 
     def setup_allocations(self):
         if not self.allocations:
-            self.allocations = allocations_client()
+            loader = loading.get_plugin_loader('password')
+            username = os.environ.get('OS_USERNAME')
+            password = os.environ.get('OS_PASSWORD')
+            auth_url = os.environ.get('OS_AUTH_URL')
+            project_name = os.environ.get('OS_TENANT_NAME')
+            auth = loader.load_from_options(auth_url=auth_url,
+                                            username=username,
+                                            password=password,
+                                            project_name=project_name,
+                                            user_domain_id='default',
+                                            project_domain_id='default')
+            sess = session.Session(auth=auth)
+            self.allocations = client.Client(1, session=sess)
             
     def csv_output(self, headings, rows, filename=None):
         if filename is None:

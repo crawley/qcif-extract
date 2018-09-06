@@ -13,6 +13,7 @@ setup(name='qcif-extract',
           'python-novaclient',
           'python-neutronclient',
           'python-keystoneclient',
+          'nectarallocationclient',
           'mysql-connector-python'
       ],
       zip_safe=False)

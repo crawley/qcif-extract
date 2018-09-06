@@ -20,34 +20,32 @@ class General(Processor):
         
     def run(self, args):
         self.setup_allocations()
-        allocations = self.allocations.get_allocations()
+        allocations = self.allocations.allocations.list()
         # print allocations 
         fields_to_report = [
-            ("tenant_id", lambda x: x['project_id']),
-            ("tenant_name", lambda x: x['project_name']),
-            ("project_name", lambda x: x['project_description']),
+            ("tenant_id", lambda x: x.project_id),
+            ("tenant_name", lambda x: x.project_name),
+            ("project_name", lambda x: x.project_description),
             ("alloc_home",
-             lambda x: x['allocation_home'] if 'allocation_home' in x and
-             x['allocation_home'] is not None else ""),
-            ("status", lambda x: x['status']),
-            ("modified_time", lambda x: x['modified_time']),
-            ("instance_quota", lambda x: x['instance_quota']),
-            ("vcpu_quota", lambda x: x['core_quota']),
-            ("ram_quota", lambda x: x['ram_quota']),
-            ("for_1", lambda x: x['field_of_research_1']),
-            ("for_1_weight", lambda x: x['for_percentage_1']),
-            ("for_2", lambda x: x['field_of_research_2']),
-            ("for_2_weight", lambda x: x['for_percentage_2']),
-            ("for_3", lambda x: x['field_of_research_3']),
-            ("for_3_weight", lambda x: x['for_percentage_3']),
-            ("start_date", lambda x: x['start_date']),
-            ("end_date", lambda x: x['end_date']),
+             lambda x: x.allocation_home or ""),
+            ("status", lambda x: x.status),
+            ("modified_time", lambda x: x.modified_time),
+            ("instance_quota", lambda x: self._nova_quota(x, 'instances')),
+            ("vcpu_quota", lambda x: self._nova_quota(x, 'cores')),
+            ("ram_quota", lambda x: self._nova_quota(x, 'ram')),
+            ("for_1", lambda x: x.field_of_research_1),
+            ("for_1_weight", lambda x: x.for_percentage_1),
+            ("for_2", lambda x: x.field_of_research_2),
+            ("for_2_weight", lambda x: x.for_percentage_2),
+            ("for_3", lambda x: x.field_of_research_3),
+            ("for_3_weight", lambda x: x.for_percentage_3),
+            ("start_date", lambda x: x.start_date),
+            ("end_date", lambda x: x.end_date),
         ]
 
-        allocations = filter(lambda a: a['instance_quota'] < 65536 and \
-                             a['core_quota'] < 65536 and \
-                             a['ram_quota'] < 65536,
-                             allocations)
+        # This deals with the fact that Mosaic only allows 16 bit values
+        # for instance, vcpu and ram quotas.
+        allocations = filter(lambda a: self._no_monster_quotas(a), allocations)
 
         if args.csv:
             self.csv_output(map(lambda x: x[0], fields_to_report),
@@ -64,3 +62,14 @@ class General(Processor):
                                 allocations),
                            args.tablename or "nectar_general",
                            replaceAll=True)
+    
+    def _no_monster_quotas(self, alloc):
+        return self._nova_quota(alloc, 'instances') < 65536 and \
+            self._nova_quota(alloc, 'cores') < 65536 and \
+            self._nova_quota(alloc, 'ram') < 65536
+    
+    def _nova_quota(self, alloc, name):
+        try:
+            return alloc.get_allocated_nova_quota()[name]
+        except KeyError:
+            return 0
