@@ -43,10 +43,6 @@ class General(Processor):
             ("end_date", lambda x: x.end_date),
         ]
 
-        # This deals with the fact that Mosaic only allows 16 bit values
-        # for instance, vcpu and ram quotas.
-        allocations = filter(lambda a: self._no_monster_quotas(a), allocations)
-
         if args.csv:
             self.csv_output(map(lambda x: x[0], fields_to_report),
                             map(lambda alloc: map(
@@ -62,11 +58,6 @@ class General(Processor):
                                 allocations),
                            args.tablename or "nectar_general",
                            replaceAll=True)
-    
-    def _no_monster_quotas(self, alloc):
-        return self._nova_quota(alloc, 'instances') < 65536 and \
-            self._nova_quota(alloc, 'cores') < 65536 and \
-            self._nova_quota(alloc, 'ram') < 65536
     
     def _nova_quota(self, alloc, name):
         try:
