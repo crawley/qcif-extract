@@ -24,9 +24,7 @@ class Managers(Processor):
         pass
         
     def run(self, args):
-        self.setup_allocations()
         self.setup_keystone()
-        allocations = self.allocations.get_allocations()
         all_users = map(lambda x: x.to_dict(),
                         self.keystone.users.list())
         email_dict = {x['id']: x['email'] for x in all_users

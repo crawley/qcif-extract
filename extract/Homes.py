@@ -29,9 +29,7 @@ class Homes(Processor):
 
     def run(self, args):
         separator = "," if args.csv else " "
-        self.setup_allocations()
         self.setup_keystone()
-        allocations = self.allocations.get_allocations()
         all_users = map(lambda x: x.to_dict(),
                         self.keystone.users.list())
         inst_dict = {x['id']: x['email'].split("@")[-1] for x in all_users
