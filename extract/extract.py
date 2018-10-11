@@ -8,6 +8,7 @@ import os
 from Subcommand import Processor
 from General import General
 from Managers import Managers
+from Members import Members
 from Homes import Homes
 from Projects import Projects
 from ProjectUsage import ProjectUsage
@@ -31,6 +32,9 @@ def general(args):
 
 def managers(args):
     Managers().do_run(args)
+
+def members(args):
+    Members().do_run(args)
 
 def homes(args):
     Homes().do_run(args)
@@ -89,8 +93,12 @@ def collect_args():
     General.build_parser(general_parser, general)
     
     managers_parser = subparsers.add_parser('managers',
-                                            help='extract allocation managers')
+                                            help='extract tenant managers')
     Managers.build_parser(managers_parser, managers)
+    
+    members_parser = subparsers.add_parser('members',
+                                            help='extract tenant members')
+    Members.build_parser(members_parser, members)
     
     homes_parser = subparsers.add_parser('homes',
                                          help='extract allocation homes')
@@ -124,6 +132,7 @@ def collect_args():
                              subparsers={
                                  'help': help_parser,
                                  'managers': managers_parser,
+                                 'members': members_parser,
                                  'homes': homes_parser,
                                  'projects': projects_parser,
                                  'project-usage': project_usage_parser,

@@ -51,7 +51,8 @@ The following commands are currently available:
 
   - `help` - command self-documentation
   - `homes` - allocation homes
-  - `managers` - allocation managers
+  - `managers` - allocations' tenant managers
+  - `members` - allocations' tenant members
   - `general` - general allocation info
   - `project-usage` - project-level usage
   - `instance-usage` - instance-level usage
