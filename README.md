@@ -15,7 +15,7 @@ You need python 2 with setuptools.  Using "virtualenv" is recommended:
   - Create and activate a venv; e.g. run "virtualenv venv"
 
   - Install mysql-connector-python.  (Blame Oracle for the fact that you can't
-    get it from Pypi like you used to ...)
+    get it from Pypi like you are used to doing ...)
 
     - clone the source tree for "mysql/mysql-connector-python" from github.
     - cd to the git tree
@@ -35,7 +35,7 @@ You need python 2 with setuptools.  Using "virtualenv" is recommended:
     - run "python setup.py develop"
     - run "extract/extract.py" ... and you should get the basic usage info.
 
-  - To install mailout (e.g. into your venv)
+  - To install 'extract' (e.g. into your venv)
 
     - run "python setup.py install"
 
