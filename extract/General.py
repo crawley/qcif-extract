@@ -23,16 +23,44 @@ class General(Processor):
         allocations = self.allocations.allocations.list()
         # print allocations 
         fields_to_report = [
+            ("alloc_id", lambda x: x.id),
             ("tenant_id", lambda x: x.project_id),
             ("tenant_name", lambda x: x.project_name),
             ("project_name", lambda x: x.project_description),
             ("alloc_home",
              lambda x: x.allocation_home or ""),
             ("status", lambda x: x.status),
+            ("submit_date", lambda x: x.submit_date),
             ("modified_time", lambda x: x.modified_time),
             ("instance_quota", lambda x: self._nova_quota(x, 'instances')),
             ("vcpu_quota", lambda x: self._nova_quota(x, 'cores')),
             ("ram_quota", lambda x: self._nova_quota(x, 'ram')),
+            ("object_gb_quota",
+             lambda x: self._zone_quota(x, 'object.object', 'nectar')),
+            ("qriscloud_volume_gb_quota",
+             lambda x: self._zone_quota(x, 'volume.gigabytes', 'QRIScloud')),
+            ("qriscloud_rds_volume_gb_quota",
+             lambda x: self._zone_quota(x, 'volume.gigabytes', 'QRIScloud-rds')),
+            ("qriscloud_share_shares_quota",
+             lambda x: self._zone_quota(x, 'share.shares', 'QRIScloud-GPFS')),
+            ("qriscloud_share_snapshots_quota",
+             lambda x: self._zone_quota(x, 'share.snapshots', 'QRIScloud-GPFS')),
+            ("qriscloud_share_gb_quota",
+             lambda x: self._zone_quota(x, 'share.gigabytes', 'QRIScloud-GPFS')),
+            ("qriscloud_share_snapshot_gb_quota",
+             lambda x: self._zone_quota(x, 'share.snapshot_gigabytes', 'QRIScloud-GPFS')),
+            ("database_instance_quota",
+             lambda x: self._zone_quota(x, 'database.instances', 'nectar')),
+            ("database_volumes_quota",
+             lambda x: self._zone_quota(x, 'database.volumes', 'nectar')),
+            ("private_network_quota",
+             lambda x: self._zone_quota(x, 'network.network', 'nectar')),
+            ("floating_ip_quota",
+             lambda x: self._zone_quota(x, 'network.floatingip', 'nectar')),
+            ("router_quota",
+             lambda x: self._zone_quota(x, 'network.router', 'nectar')),
+            ("loadbalancer_quota",
+             lambda x: self._zone_quota(x, 'network.loadbalancer', 'nectar')),
             ("for_1", lambda x: x.field_of_research_1),
             ("for_1_weight", lambda x: x.for_percentage_1),
             ("for_2", lambda x: x.field_of_research_2),
@@ -41,6 +69,20 @@ class General(Processor):
             ("for_3_weight", lambda x: x.for_percentage_3),
             ("start_date", lambda x: x.start_date),
             ("end_date", lambda x: x.end_date),
+            ("ncris_support", lambda x: x.ncris_support),            
+            ("nectar_support", lambda x: x.nectar_support),
+            ("funding_national_percent", lambda x: x.funding_national_percent),
+            ("funding_node", lambda x: x.funding_node),
+            ("contact_email", lambda x: x.contact_email),
+            ("chief_investigator", lambda x: x.chief_investigator),
+            ("estimated_project_duration",
+             lambda x: x.estimated_project_duration),
+            ("approver_email", lambda x: x.approver_email),
+            ("estimated_number_users", lambda x: x.estimated_number_users),
+            ("convert_trial_project", lambda x: x.convert_trial_project),
+            ("provisioned", lambda x: x.provisioned),
+            ("notifications", lambda x: x.notifications),
+            ("parent_request", lambda x: x.parent_request)
         ]
 
         if args.csv:
@@ -64,3 +106,14 @@ class General(Processor):
             return alloc.get_allocated_nova_quota()[name]
         except KeyError:
             return 0
+
+    def _zone_quota(self, alloc, resource, zone):
+        try:
+            st, rt = resource.split('.')
+            for quota in alloc.get_quota(st):
+                if quota.zone == zone and quota.resource == resource:
+                    return quota.quota
+            return 0
+        except KeyError:
+            return 0
+        
