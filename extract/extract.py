@@ -10,6 +10,7 @@ from General import General
 from Managers import Managers
 from Members import Members
 from Homes import Homes
+from Volumes import Volumes
 from Projects import Projects
 from ProjectUsage import ProjectUsage
 from InstanceUsage import InstanceUsage
@@ -45,8 +46,7 @@ def collect_args():
     parser.add_argument('-c', '--config',
                         default='~/.extract.cfg',
                         help='The config file contains properties that \
-                        control a lot of the behavior of the mailout tool.  \
-                        You can add custom properties.')
+                        control a lot of the behavior of the extract tool.')
     
     parser.add_argument('-f', '--filename',
                         default=None,
@@ -66,6 +66,7 @@ def collect_args():
     projects_parser = Projects().build_parser(subparsers)
     project_usage_parser = ProjectUsage().build_parser(subparsers)
     instance_usage_parser = InstanceUsage().build_parser(subparsers)
+    volumes_parser = Volumes().build_parser(subparsers)
     
     help_parser = subparsers.add_parser('help',
                                         help='print subcommand help')
@@ -80,6 +81,7 @@ def collect_args():
                                  'projects': projects_parser,
                                  'project-usage': project_usage_parser,
                                  'instance-usage': instance_usage_parser,
+                                 'volumes': volumes_parser,
                                  'general': general_parser})
     return parser
 
