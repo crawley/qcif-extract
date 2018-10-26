@@ -12,8 +12,7 @@ class Usages(Processor):
     def __init__(self):
         Processor.__init__(self)
 
-    @staticmethod
-    def build_parser(parser, func):
+    def add_usages_arguments(self, parser):
         parser.add_argument('--year', metavar='YEAR-NO', type=int,
                             default=None,
                             help='Year to extract data for (e.g. 2017)')
@@ -23,7 +22,6 @@ class Usages(Processor):
         parser.add_argument('--project', metavar='NAME_OR_ID',
                             default=None,
                             help='Restrict to a single NeCTAR project')
-        parser.set_defaults(subcommand=func)
 
     def check_args(self, args):
         if not args.year or not args.month:

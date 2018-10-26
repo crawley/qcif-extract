@@ -9,11 +9,14 @@ class General(Processor):
     def __init__(self):
         Processor.__init__(self)
 
-    @staticmethod
-    def build_parser(parser, func):
-        parser.epilog = 'Extracts general information about NeCTAR \
-        allocations from the Allocations DB'
-        parser.set_defaults(subcommand=func)
+    def build_parser(self, parent):
+        parser = parent.add_parser(
+            'general',
+            help='extract general allocation information',
+            epilog='Extracts general information about NeCTAR allocations \
+            from the Allocations DB')
+        parser.set_defaults(subcommand=lambda args: self.do_run(args))
+        return parser
 
     def check_args(self, args):
         pass

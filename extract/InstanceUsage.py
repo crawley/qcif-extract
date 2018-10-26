@@ -11,13 +11,17 @@ class InstanceUsage(Usages):
     def __init__(self):
         Usages.__init__(self)
 
-    @staticmethod
-    def build_parser(parser, func):
-        parser.epilog = 'Extracts NeCTAR instance usage from Nova'
+    def build_parser(self, parent):
+        parser = parent.add_parser(
+            'instance-usage',
+            help='extract instance usage',
+            epilog='Extracts NeCTAR instance usage from Nova')
         parser.add_argument('--qriscloud', action='store_true',
                             default=False,
                             help='Populate the "nectar_qriscloud_instances" table.')
-        Usages.build_parser(parser, func)
+        self.add_usages_arguments(parser)
+        parser.set_defaults(subcommand=lambda args: self.do_run(args))
+        return parser
 
     def check_args(self, args):
         Usages.check_args(self, args)

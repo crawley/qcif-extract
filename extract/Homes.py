@@ -10,14 +10,16 @@ class Homes(Processor):
     def __init__(self):
         Processor.__init__(self)
 
-    @staticmethod
-    def build_parser(parser, func):
-        parser.epilog = 'Extracts NeCTAR project homes from Keystone'
+    def build_parser(self, parent):
+        parser = parent.add_parser(
+            'homes',
+            help='extract allocation homes',
+            epilog='Extracts NeCTAR project homes from Keystone')
         parser.add_argument('--legacy', action='store_true',
                             default=False,
                             help='Legacy (denormalized) table')
-    
-        parser.set_defaults(subcommand=func)
+        parser.set_defaults(subcommand=lambda args: self.do_run(args))
+        return parser
 
     def check_args(self, args):
         if not args.csv:

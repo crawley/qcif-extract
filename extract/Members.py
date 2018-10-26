@@ -10,11 +10,14 @@ class Members(Processor):
     def __init__(self):
         Processor.__init__(self)
 
-    @staticmethod
-    def build_parser(parser, func):
-        parser.epilog = 'Extracts NeCTAR project member email \
-        addresses from Keystone'
-        parser.set_defaults(subcommand=func)
+    def build_parser(self, parent):
+        parser = parent.add_parser(
+            'members',
+            help='extract tenant members',
+            epilog='Extracts NeCTAR project member email \
+            addresses from Keystone')
+        parser.set_defaults(subcommand=lambda args: self.do_run(args))
+        return parser
 
     def check_args(self, args):
         pass

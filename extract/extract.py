@@ -13,8 +13,7 @@ from Homes import Homes
 from Projects import Projects
 from ProjectUsage import ProjectUsage
 from InstanceUsage import InstanceUsage
-from NextcloudLogin import NextcloudLogin
-from NextcloudUsage import NextcloudUsage
+
 
 def help(args):
     if args.name:
@@ -26,33 +25,6 @@ def help(args):
         print "Use 'extract --help' for general help"
         print "Use 'extract help <subcommand>' for subcommand help"
     sys.exit(0)
-
-def general(args):
-    General().do_run(args)
-
-def managers(args):
-    Managers().do_run(args)
-
-def members(args):
-    Members().do_run(args)
-
-def homes(args):
-    Homes().do_run(args)
-
-def project_usage(args):
-    ProjectUsage().do_run(args)
-
-def projects(args):
-    Projects().do_run(args)
-
-def instance_usage(args):
-    InstanceUsage().do_run(args)
-
-def nextcloud_login(args):
-    NextcloudLogin().do_run(args)
-
-def nextcloud_usage(args):
-    NextcloudUsage().do_run(args)
 
 def collect_args():
     parser = argparse.ArgumentParser(
@@ -87,42 +59,13 @@ def collect_args():
     
     subparsers = parser.add_subparsers(help='subcommand help')
 
-    general_parser = subparsers.add_parser('general',
-                                            help='extract general allocation \
-                                            information')
-    General.build_parser(general_parser, general)
-    
-    managers_parser = subparsers.add_parser('managers',
-                                            help='extract tenant managers')
-    Managers.build_parser(managers_parser, managers)
-    
-    members_parser = subparsers.add_parser('members',
-                                            help='extract tenant members')
-    Members.build_parser(members_parser, members)
-    
-    homes_parser = subparsers.add_parser('homes',
-                                         help='extract allocation homes')
-    Homes.build_parser(homes_parser, homes)
-    
-    projects_parser = subparsers.add_parser('projects',
-                                            help='extract projects')
-    Projects.build_parser(projects_parser, projects)
-
-    project_usage_parser = subparsers.add_parser('project-usage',
-                                                 help='extract project usage')
-    ProjectUsage.build_parser(project_usage_parser, project_usage)
-
-    instance_usage_parser = subparsers.add_parser('instance-usage',
-                                                  help='extract instance usage')
-    InstanceUsage.build_parser(instance_usage_parser, instance_usage)
-    
-    nextcloud_login_parser = subparsers.add_parser('nextcloud-login',
-                                              help='extract Nextcloud logins')
-    NextcloudLogin.build_parser(nextcloud_login_parser, nextcloud_login)
-    
-    nextcloud_usage_parser = subparsers.add_parser('nextcloud-usage',
-                                              help='extract Nextcloud usage')
-    NextcloudUsage.build_parser(nextcloud_usage_parser, nextcloud_usage)
+    general_parser = General().build_parser(subparsers)
+    managers_parser = Managers().build_parser(subparsers)
+    members_parser = Members().build_parser(subparsers)
+    homes_parser = Homes().build_parser(subparsers)
+    projects_parser = Projects().build_parser(subparsers)
+    project_usage_parser = ProjectUsage().build_parser(subparsers)
+    instance_usage_parser = InstanceUsage().build_parser(subparsers)
     
     help_parser = subparsers.add_parser('help',
                                         help='print subcommand help')
@@ -137,8 +80,6 @@ def collect_args():
                                  'projects': projects_parser,
                                  'project-usage': project_usage_parser,
                                  'instance-usage': instance_usage_parser,
-                                 'nextcloud-login': nextcloud_login_parser,
-                                 'nextcloud-usage': nextcloud_usage_parser,
                                  'general': general_parser})
     return parser
 

@@ -29,6 +29,7 @@ class Processor:
             
         self.config = self.load_config(args.config)
         self.nova = None
+        self.cinder = None
         self.neutron = None
         self.keystone = None
         self.allocations = None
@@ -54,6 +55,11 @@ class Processor:
     def setup_nova(self):
         if not self.nova:
             self.nova = make_client('compute',
+                                    http_log_debug=self.debug)
+
+    def setup_cinder(self):
+        if not self.cinder:
+            self.cinder = make_client('volume',
                                     http_log_debug=self.debug)
 
     def setup_keystone(self):
