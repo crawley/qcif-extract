@@ -82,10 +82,11 @@ class General(Processor):
              lambda x: x.estimated_project_duration),
             ("approver_email", lambda x: x.approver_email),
             ("estimated_number_users", lambda x: x.estimated_number_users),
-            ("convert_trial_project", lambda x: x.convert_trial_project),
-            ("provisioned", lambda x: x.provisioned),
-            ("notifications", lambda x: x.notifications),
-            ("parent_request", lambda x: x.parent_request)
+            ("convert_trial_project",
+             lambda x: 1 if x.convert_trial_project else 0),
+            ("provisioned", lambda x: 1 if x.provisioned else 0),
+            ("notifications", lambda x: 1 if x.notifications else 0),
+            ("parent_request", lambda x: x.parent_request or 0)
         ]
 
         if args.csv:
