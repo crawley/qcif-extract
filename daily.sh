@@ -10,4 +10,7 @@ export OS_COMPUTE_API_VERSION=2.40
 FLAGS="-c /media/scrawley/CARTMAN/mosaic.cfg"
 
 extract/extract.py $FLAGS members \
-&& extract/extract.py $FLAGS managers 2>&1
+    && extract/extract.py $FLAGS general \
+    && extract/extract.py $FLAGS volumes \
+    && extract/extract.py $FLAGS managers 2>&1
+
