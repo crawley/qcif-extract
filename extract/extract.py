@@ -9,6 +9,7 @@ from Subcommand import Processor
 from General import General
 from Managers import Managers
 from Members import Members
+from Grants import Grants
 from Homes import Homes
 from Volumes import Volumes
 from Projects import Projects
@@ -67,6 +68,7 @@ def collect_args():
     project_usage_parser = ProjectUsage().build_parser(subparsers)
     instance_usage_parser = InstanceUsage().build_parser(subparsers)
     volumes_parser = Volumes().build_parser(subparsers)
+    grants_parser = Grants().build_parser(subparsers)
     
     help_parser = subparsers.add_parser('help',
                                         help='print subcommand help')
@@ -82,6 +84,7 @@ def collect_args():
                                  'project-usage': project_usage_parser,
                                  'instance-usage': instance_usage_parser,
                                  'volumes': volumes_parser,
+                                 'grants': grants_parser,
                                  'general': general_parser})
     return parser
 
