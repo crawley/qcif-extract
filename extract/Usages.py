@@ -91,11 +91,15 @@ def _merge_usage(usage, usage2):
     for u in usage2.server_usages:
         map[u['instance_id']] = u
     usage.server_usages = map.values()
-    usage.total_hours = reduce((lambda x, u: x + u['hours']),
-                               map.values(), 0) 
-    usage.total_memory_mb_usage = reduce((lambda x, u: x + u['memory_mb']),
-                                         map.values(), 0) 
-    usage.total_vcpus_usage = reduce((lambda x, u: x + u['vcpus']),
-                                     map.values(), 0) 
-    usage.total_local_gb_usage = reduce((lambda x, u: x + u['local_gb']),
-                                        map.values(), 0) 
+    usage.total_hours = \
+        reduce((lambda x, u: x + u['hours']),
+               map.values(), 0) 
+    usage.total_memory_mb_usage = \
+        reduce((lambda x, u: x + u['memory_mb'] * u['hours']),
+               map.values(), 0) 
+    usage.total_vcpus_usage = \
+        reduce((lambda x, u: x + u['vcpus'] * u['hours']),
+               map.values(), 0) 
+    usage.total_local_gb_usage = \
+        reduce((lambda x, u: x + u['local_gb'] * u['hours']),
+               map.values(), 0) 
