@@ -25,6 +25,9 @@ You need python 2 with setuptools.  Using "virtualenv" is recommended:
     Nova client library to use version 2.40 or later.  One way to get this
     to work is to add "OS_COMPUTE_API_VERSION=2.40" to the environment.
 
+    (Hint: if you get a python error complaining about "unexpected keyword 
+    argument 'marker'", this is probably the cause!)
+
 ## Installation from source:
 
   - Clone source from the master GIT repo.
