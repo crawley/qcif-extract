@@ -21,6 +21,12 @@ You need python 2 with setuptools.  Using "virtualenv" is recommended:
     - cd to the git tree
     - run "python setup install" to install into your venv.
 
+  - Install Sam's Nectar allocation client library from Github
+    - An easy way to do it is to use pip.
+    
+          pip install git+https://github.com/NeCTAR-RC/python-nectarallocationclient.git
+        
+
   - To get the usage extraction to work properly, you need to force the
     Nova client library to use version 2.40 or later.  One way to get this
     to work is to add "OS_COMPUTE_API_VERSION=2.40" to the environment.
